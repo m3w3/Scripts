@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 import csv
 
 """THIS SCRIPT IS LIBRARY DEPENDENT!
@@ -26,15 +27,25 @@ while validate2 != 'y':
 # sheet name or sheet number or list of sheet numbers and names
 sheet = int(sheet_str) - 1
 
-df = pd.read_excel(excel_file, sheet_name=sheet) # read excel file
+df = pd.read_excel(excel_file, sheet_name=sheet, na_values="") # read excel file
 
 header = list(df)
 hash_ = {}
 i = 1
 for index, row in df.iterrows(): # iterate over each row
-    hash_[i] = [round(row[column], 2) if isinstance(row[column], int)
-                or isinstance(row[column], float)
-                else str(row[column]) for column in header]
+    hash_[i] = []
+    hash_index = hash_[i]
+    
+    for column in header:
+        cell_val = row[column]
+        
+        if isinstance(cell_val, int) or isinstance(cell_val, float):
+            if math.isnan(cell_val):
+                hash_index.append("")
+            else:
+                hash_index.append(round(cell_val, 2))
+        else:
+            hash_index.append(str(cell_val))
     i += 1
 
 # TEST HASH MAP
